@@ -1,0 +1,21 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/Fixtures.html
+
+one:
+  std_ymd: 
+  stock_code: 
+  end_price: 
+  com_last: 
+  start_price: 
+  high_price: 
+  low_price: 
+  amount: 
+
+two:
+  std_ymd: 
+  stock_code: 
+  end_price: 
+  com_last: 
+  start_price: 
+  high_price: 
+  low_price: 
+  amount: 

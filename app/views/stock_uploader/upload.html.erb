@@ -1,0 +1,29 @@
+<h1>Listing stocks</h1>
+
+<table>
+  <thead>
+  <tr>
+    <th>No</th>
+    <th>업체명</th>
+    <th>종목코드</th>
+  </tr>
+  </thead>
+
+  <tbody>
+  <% idx = 0 %>
+  <% @items.each do |item| %>
+  <% idx=idx+1 %>
+      <tr>
+        <td><%= idx%></td>
+        <td><%= item[:name] %></td>
+        <td><%= item[:code] %></td>
+      </tr>
+  <% end %>
+  </tbody>
+</table>
+
+
+<%= form_tag({action: :update}) do %>
+    <%= hidden_field_tag "item_file_name", @item_file_name%>
+    <%= submit_tag %>
+<% end %>
