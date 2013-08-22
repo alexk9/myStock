@@ -1,0 +1,32 @@
+<table>
+  <tr>
+    <th>날짜</th>
+    <th>종가</th>
+    <th>전일비</th>
+    <th>시가</th>
+    <th>고가</th>
+    <th>저가</th>
+    <th>거래량</th>
+  </tr>
+
+<% @prices.each do |p| %>
+  <tr>
+    <td><%= p.std_ymd%></td>
+    <td><%= p.end_price%></td>
+    <td><%if p.comp_dir=='상한'%>
+          <%=image_tag "ico_up02.gif"%>
+        <%elsif p.comp_dir == '상승'%>
+          <%=image_tag 'ico_up.gif'%>
+        <%elsif p.comp_dir == '하한'%>
+          <%=image_tag 'ico_down02.gif'%>
+        <%elsif p.comp_dir == '하락'%>
+          <%=image_tag 'ico_down.gif'%>
+        <%end%><%= p.comp_last%></td>
+    <td><%= p.start_price%></td>
+    <td><%= p.high_price%></td>
+    <td><%= p.low_price%></td>
+    <td><%= p.amount%></td>
+  </tr>
+<% end %>
+</table>
+

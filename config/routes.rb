@@ -1,5 +1,11 @@
 MyStock::Application.routes.draw do
-  resources :stocks
+
+
+  resources :price do
+    collection do
+      get 'sync/:stock_code', :to => "price#sync"
+    end
+  end
 
   resources :stock_uploader do
     collection do
