@@ -13,12 +13,11 @@
 
 ActiveRecord::Schema.define(version: 20130821010922) do
 
-  create_table "prices", id: false, force: true do |t|
-    t.string   "std_ymd"
-    t.string   "stock_code"
+  create_table "prices", primary_key: "std_ymd", force: true do |t|
+    t.string   "stock_code",  limit: 6
     t.integer  "end_price"
     t.integer  "comp_last"
-    t.string   "comp_dir"
+    t.string   "comp_dir",    limit: 10
     t.integer  "start_price"
     t.integer  "high_price"
     t.integer  "low_price"
@@ -27,13 +26,16 @@ ActiveRecord::Schema.define(version: 20130821010922) do
     t.datetime "updated_at"
   end
 
-  create_table "stocks", id: false, force: true do |t|
+  add_index "prices", ["std_ymd", "stock_code"], name: "sqlite_autoindex_prices_1", unique: true
+
+  create_table "stocks", primary_key: "stock_code", force: true do |t|
     t.string   "company_name"
-    t.string   "stock_code"
     t.string   "biz_category"
     t.string   "market"
     t.datetime "created_at"
     t.datetime "updated_at"
   end
+
+  add_index "stocks", ["stock_code"], name: "sqlite_autoindex_stocks_1", unique: true
 
 end

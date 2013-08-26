@@ -1,9 +1,14 @@
 MyStock::Application.routes.draw do
 
+  get "welcome/index"
 
+  resources :stocks do
+
+  end
   resources :price do
     collection do
       get 'sync/:stock_code', :to => "price#sync"
+      get 'sync_all', :to => "price#sync_all"
     end
   end
 
@@ -17,7 +22,7 @@ MyStock::Application.routes.draw do
   # See how all your routes lay out with "rake routes".
 
   # You can have the root of your site routed with "root"
-  # root 'welcome#index'
+  root 'welcome#index'
 
   # Example of regular route:
   #   get 'products/:id' => 'catalog#view'

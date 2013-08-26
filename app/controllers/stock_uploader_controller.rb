@@ -32,6 +32,7 @@ class StockUploaderController < ApplicationController
     Stock.delete_all
 
     wb  = RubyXL::Parser.parse(@item_file_path)
+    stocks = Array.new
     wb[0].each { |line|
       if line != nil and line[0]!=nil and line[1] != nil and line[0].value!='법인명' then
         s = Stock.new
@@ -39,10 +40,10 @@ class StockUploaderController < ApplicationController
         s.stock_code = line[1].value
         s.market = line[0].value[1]
 
-        s.save
+        stocks << s
       end
     }
 
-
+    Stock.import stocks
   end
 end
