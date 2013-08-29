@@ -50,3 +50,4 @@ gem 'rubyXL'
 
 gem 'composite_primary_keys'
 gem 'activerecord-import'
+gem 'mysql2'

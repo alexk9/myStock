@@ -1,0 +1,27 @@
+<h1>Listing WorkingDates</h1>
+
+<table>
+  <thead>
+  <tr>
+    <th>Std YMD</th>
+    <th></th>
+    <th></th>
+    <th></th>
+  </tr>
+  </thead>
+
+  <tbody>
+  <% @working_dates.each do |date| %>
+      <tr>
+        <td><%= date.std_ymd %></td>
+        <td></td>
+        <td><%= link_to 'Edit', edit_working_date_path(date) %></td>
+        <td><%= link_to 'Destroy', date, method: :delete, data: { confirm: 'Are you sure?' } %></td>
+      </tr>
+  <% end %>
+  </tbody>
+</table>
+
+<br>
+
+<%= link_to 'New Date', new_working_date_path %>

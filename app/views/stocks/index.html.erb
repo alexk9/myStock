@@ -6,8 +6,17 @@
       <th>법인명</th>
       <th>주식코드</th>
       <th>시장</th>
+      <th>상한CNT</th>
+      <th>연속상한CTN</th>
+      <th>RATIO</th>
+      <th>상승CNT</th>
+      <th>연속상승CTN</th>
+      <th>하한CNT</th>
+      <th>연속하한CTN</th>
+      <th>하락CNT</th>
+      <th>연속하락CTN</th>
       <th></th>
-      <th></th>
+      <th>상한가일때 상승할 확률</th>
       <th></th>
     </tr>
   </thead>
@@ -18,7 +27,17 @@
         <td><%=stock.company_name%></td>
         <td><%=stock.stock_code%></td>
         <td><%=stock.market%></td>
-        <td><%= link_to 'Show', stock %></td>
+        <td><%= stock.try(:highest_anal_master).try(:highest_cnt) %></td>
+        <td><%= stock.try(:highest_anal_master).try(:highest_pair_cnt)%></td>
+        <td><% if stock.try(:highest_anal_master).try(:highest_cnt)!=nil and stock.try(:highest_anal_master).try(:highest_cnt)!=0 %><%= "%.2f" % (stock.try(:highest_anal_master).try(:highest_pair_cnt)/stock.try(:highest_anal_master).try(:highest_cnt).to_f)%><%end%></td>
+        <td><%= stock.try(:highest_anal_master).try(:up_cnt)%></td>
+        <td><%= stock.try(:highest_anal_master).try(:up_pair_cnt)%></td>
+        <td><%= stock.try(:highest_anal_master).try(:lowest_cnt)%></td>
+        <td><%= stock.try(:highest_anal_master).try(:lowest_pair_cnt)%></td>
+        <td><%= stock.try(:highest_anal_master).try(:down_cnt)%></td>
+        <td><%= stock.try(:highest_anal_master).try(:down_pair_cnt)%></td>
+
+        <td><%= link_to '체크', calc_highest_match_price_index_path(stock) %></td>
         <td><%= link_to 'Edit', edit_stock_path(stock) %></td>
         <td><%= link_to 'Destroy', stock, method: :delete, data: { confirm: 'Are you sure?' } %></td>
       </tr>

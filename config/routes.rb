@@ -1,6 +1,15 @@
 MyStock::Application.routes.draw do
 
+
+  resources :templates
+
   get "welcome/index"
+
+  resources :working_dates do
+    collection do
+      get "init", :to => "working_dates#init"
+    end
+  end
 
   resources :stocks do
 
@@ -9,6 +18,8 @@ MyStock::Application.routes.draw do
     collection do
       get 'sync/:stock_code', :to => "price#sync"
       get 'sync_all', :to => "price#sync_all"
+      get 'calc_highest_match/:stock_code', :to => "price#calc_highest_match", :as => "calc_highest_match"
+      get 'calc_highest_match_all', :to =>"price#calc_highest_match_all"
     end
   end
 

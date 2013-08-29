@@ -11,7 +11,32 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20130821010922) do
+ActiveRecord::Schema.define(version: 20130829045648) do
+
+  create_table "highest_anal_masters", primary_key: "stock_code", force: true do |t|
+    t.integer  "highest_cnt"
+    t.integer  "highest_pair_cnt"
+    t.integer  "up_cnt"
+    t.integer  "up_pair_cnt"
+    t.integer  "down_cnt"
+    t.integer  "down_pair_cnt"
+    t.integer  "lowest_cnt"
+    t.integer  "lowest_pair_cnt"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "highest_anal_masters", ["stock_code"], name: "sqlite_autoindex_highest_anal_masters_1", unique: true
+
+  create_table "highest_anals", primary_key: "stock_code", force: true do |t|
+    t.integer  "stock_code_seq",            null: false
+    t.string   "first_date",     limit: 10
+    t.string   "second_date",    limit: 10
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "highest_anals", ["stock_code", "stock_code_seq"], name: "sqlite_autoindex_highest_anals_1", unique: true
 
   create_table "prices", primary_key: "std_ymd", force: true do |t|
     t.string   "stock_code",  limit: 6
@@ -37,5 +62,18 @@ ActiveRecord::Schema.define(version: 20130821010922) do
   end
 
   add_index "stocks", ["stock_code"], name: "sqlite_autoindex_stocks_1", unique: true
+
+  create_table "templates", force: true do |t|
+    t.string   "temp"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "working_dates", primary_key: "std_ymd", force: true do |t|
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "working_dates", ["std_ymd"], name: "sqlite_autoindex_working_dates_1", unique: true
 
 end

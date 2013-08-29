@@ -2,6 +2,23 @@ require 'open-uri'
 
 class PriceController < ApplicationController
 
+  def calc_highest_match
+    stock_code = params[:stock_code]
+
+    @stock,@prices = calc_highest_match_by_stock_code(stock_code)
+  end
+
+  def calc_highest_match_all
+    stocks = Stock.where("market != '넥'")
+    Rails.logger.info( "Total Stock Count: %d" % stocks.size)
+    idx = 0
+    stocks.each { |a_stock|
+      idx=idx+1
+      calc_highest_match_by_stock_code( a_stock.stock_code)
+      Rails.logger.info( "Stock Code '%s' Complted. ( %d/%d )" % [a_stock.stock_code, idx, stocks.size])
+    }
+  end
+
   def sync_all
     stocks = Stock.where("market != '넥' AND stock_code not in ( SELECT distinct stock_code FROM prices)")
     Rails.logger.info( "Total Stock Count: %d" % stocks.size)
@@ -106,5 +123,85 @@ class PriceController < ApplicationController
     Price.import prices
 
     return prices
+  end
+
+  def calc_highest_match_by_stock_code(stock_code)
+
+    stock = Stock.where({:stock_code=>stock_code})[0]
+    prices = Price.joins(:stock).where( stocks:{ stock_code:stock_code}).order("std_ymd asc")
+
+    highest_cnt= 0
+    highest_pair_cnt =0
+    up_cnt = 0
+    up_pair_cnt = 0
+    lowest_cnt = 0
+    lowest_pair_cnt = 0
+    down_cnt =0
+    down_pair_cnt =0
+    highest_anals = []
+    prev_price = nil
+    prices.each { |a_price|
+      if a_price.comp_dir == '상한'
+        highest_cnt = highest_cnt + 1
+        up_cnt = up_cnt +1
+        if prev_price != nil and prev_price.comp_dir =='상한'
+          highest_pair_cnt = highest_pair_cnt +1
+          up_pair_cnt = up_pair_cnt +1
+          a_ha = HighestAnal.new
+          a_ha.stock_code = stock_code
+          a_ha.first_date=prev_price.std_ymd
+          a_ha.second_date=a_price.std_ymd
+          a_ha.stock_code_seq=highest_anals.size+1
+
+          highest_anals << a_ha
+        elsif prev_price != nil and prev_price.comp_dir =='상승'
+          up_pair_cnt = up_pair_cnt +1
+        end
+      elsif a_price.comp_dir=='상승'
+        up_cnt = up_cnt +1
+        if prev_price != nil and  ( prev_price.comp_dir == '상한' or prev_price.comp_dir=='상승')
+          up_pair_cnt = up_pair_cnt + 1
+        end
+      elsif a_price.comp_dir=='하한'
+        lowest_cnt = lowest_cnt + 1
+        down_cnt = down_cnt +1
+        if prev_price != nil and  prev_price.comp_dir =='하한'
+          lowest_pair_cnt = lowest_pair_cnt +1
+          down_pair_cnt = down_pair_cnt +1
+        elsif prev_price != nil and prev_price.comp_dir=='하락'
+          down_pair_cnt = down_pair_cnt +1
+        end
+      elsif a_price.comp_dir=='하락'
+        down_cnt = down_cnt +1
+        if prev_price != nil and  (prev_price.comp_dir =='하한' or prev_price.comp_dir =='하락')
+          down_pair_cnt= down_pair_cnt +1
+        end
+      else
+      end
+
+      prev_price= a_price
+
+    }
+
+    HighestAnalMaster.where( :stock_code => stock_code).delete_all
+    a_ham = HighestAnalMaster.new
+    a_ham.stock_code=stock_code
+    a_ham.highest_cnt=highest_cnt
+    a_ham.highest_pair_cnt=highest_anals.size
+    a_ham.up_cnt = up_cnt
+    a_ham.up_pair_cnt = up_pair_cnt
+    a_ham.lowest_cnt = lowest_cnt
+    a_ham.lowest_pair_cnt = lowest_pair_cnt
+    a_ham.down_cnt = down_cnt
+    a_ham.down_pair_cnt = down_pair_cnt
+
+    a_ham.save
+
+    HighestAnal.where( :stock_code => stock_code).delete_all
+
+    HighestAnal.import highest_anals
+
+
+    return stock, prices
   end
 end

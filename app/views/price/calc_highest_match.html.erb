@@ -1,0 +1,23 @@
+주식코드 : <%= @stock.stock_code %>, 업체명 : <%= @stock.company_name %>
+<br/>
+상한가 건수 : <%= @highest_cnt%>
+연속상한 히트수 : <%= @highest_pair.size %>
+
+<table>
+  <thead>
+  <tr>
+    <th>시작일</th>
+    <th>종료일</th>
+  </tr>
+  </thead>
+
+  <tbody>
+  <% @highest_pair.each do |pair| %>
+      <tr>
+        <td><%= pair[0].std_ymd %></td>
+        <td><%= pair[1].std_ymd %></td>
+      </tr>
+  <% end %>
+  </tbody>
+</table>
+
